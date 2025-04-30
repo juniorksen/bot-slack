@@ -13,8 +13,9 @@ load_dotenv()
 # Zona horaria de Bogotá
 BOGOTA_TZ = pytz.timezone("America/Bogota")
 
-# Configurar horario laboral (en este caso, responder después de las 9 AM)
-HORARIO_PRUEBA = 9  # Cambia esto para probar otras horas
+# Configurar horario de respuesta (entre las 5 PM y las 8 AM)
+HORA_INICIO = 17  # 5 PM
+HORA_FIN = 8      # 8 AM
 
 USER_TOKEN = os.environ["USER_TOKEN"]
 USER_ID = os.environ["USER_ID"]
@@ -51,10 +52,15 @@ def guardar_usuarios_respondidos(datos):
 # Usuarios a los que ya se ha respondido (formato: {"usuario_id": timestamp})
 usuarios_respondidos = cargar_usuarios_respondidos()
 
-# Función para verificar si está fuera del horario laboral
+# Función para verificar si está fuera del horario laboral (de 5 PM a 8 AM)
 def fuera_de_horario():
-    ahora = datetime.now(BOGOTA_TZ).hour
-    return ahora >= HORARIO_PRUEBA  # Responder siempre después de las 9 AM
+    ahora = datetime.now(BOGOTA_TZ)
+    hora_actual = ahora.hour
+    
+    # Verificar si la hora está entre las 5 PM y las 8 AM
+    if hora_actual >= HORA_INICIO or hora_actual < HORA_FIN:
+        return True
+    return False
 
 # Inicializar bot con Bolt
 slack_app = App(token=USER_TOKEN, signing_secret=SIGNING_SECRET)
@@ -145,7 +151,7 @@ if __name__ == "__main__":
     
     # Informar del inicio y modo
     print(f"Bot iniciado en modo {'PRUEBA' if MODO_PRUEBA else 'NORMAL'}")
-    print(f"Responderá mensajes después de las {HORARIO_PRUEBA}:00 horas")
+    print(f"Responderá mensajes entre las {HORA_INICIO}:00 horas y las {HORA_FIN}:00 horas")
     print(f"Hora de inicio del bot: {datetime.fromtimestamp(INICIO_BOT, BOGOTA_TZ)}")
     if MODO_PRUEBA:
         print(f"Solo responderá al usuario de prueba: {USUARIO_PRUEBA}")
