@@ -10,7 +10,6 @@ import pytz
 from dotenv import load_dotenv
 load_dotenv()
 
-
 # Zona horaria de Bogotá
 BOGOTA_TZ = pytz.timezone("America/Bogota")
 
