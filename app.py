@@ -154,5 +154,5 @@ if __name__ == "__main__":
     # Iniciar hilo de revisión de mensajes
     Thread(target=revisar_mensajes, daemon=True).start()
     
-    # Iniciar servidor Flask
-    app.run(port=3000)
+    # Iniciar servidor Flask en el puerto adecuado
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 3000)))  # Usa el puerto de Render
